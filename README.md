@@ -1,5 +1,6 @@
 # ESPCN-TensorFlow
 TensorFlow implementation of the Efficient Sub-Pixel Convolutional Neural Network in TensorFlow (ESPCN). Network based on this [paper](https://arxiv.org/pdf/1609.05158.pdf) and code adapted from this [repo](https://github.com/JesseYang/Espcn).
+This network can achieve the real-time performance of the [FSRCNN](https://github.com/drakelevy/FSRCNN-TensorFlow) while also surpassing the quality of the [SRCNN](https://github.com/tegg89/SRCNN-Tensorflow).
 
 ## Prerequisites
  * Python 2.7
@@ -22,6 +23,8 @@ Must specify checkpoint, low-resolution image, and output path
 `python generate.py --checkpoint logdir/train --lr_image images/butterfly_lr.png --out_path results/butterfly_hr.png`
 
 Run `prepare_images.py` and then `prepare_data.py` to format the training and validation data
+
+Check `params.json` for parameter values
 
 ## Result
 
