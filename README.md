@@ -18,6 +18,7 @@ Can specify epochs, learning rate, batch size etc:
 For generating: `python generate.py`
 <br>
 Must specify checkpoint, low-resolution image, and output path
+
 `python generate.py --checkpoint logdir/train --lr_image images/butterfly_lr.png --out_path results/butterfly_hr.png`
 
 Run `prepare_images.py` and then `prepare_data.py` to format the training and validation data
@@ -33,7 +34,7 @@ Bicubic interpolated image:
 ![bicubic](https://github.com/drakelevy/ESPCN-Tensorflow/blob/master/result/bicubic.jpg)<br>
 Super-resolved image:
 <br>
-![espcn](https://github.com/drakelevy/ESPCN-Tensorflow/blob/master/result/espcn.jpg)
+![espcn](https://github.com/drakelevy/ESPCN-Tensorflow/blob/master/result/espcn.png)
 
 ## References
 * [JesseYang/Espcn](https://github.com/JesseYang/Espcn)
