@@ -27,13 +27,13 @@ Run `prepare_images.py` and then `prepare_data.py` to format the training and va
 <br>
 Original butterfly image:
 <br>
-![orig](https://github.com/drakelevy/ESPCN-Tensorflow/blob/master/result/original.png)<br>
+![orig](https://github.com/drakelevy/ESPCN-TensorFlow/blob/master/result/original.jpg)<br>
 Bicubic interpolated image:
 <br>
-![bicubic](https://github.com/drakelevy/ESPCN-Tensorflow/blob/master/result/bicubic.png)<br>
+![bicubic](https://github.com/drakelevy/ESPCN-Tensorflow/blob/master/result/bicubic.jpg)<br>
 Super-resolved image:
 <br>
-![espcn](https://github.com/drakelevy/ESPCN-Tensorflow/blob/master/result/espcn.png)
+![espcn](https://github.com/drakelevy/ESPCN-Tensorflow/blob/master/result/espcn.jpg)
 
 ## References
 * [JesseYang/Espcn](https://github.com/JesseYang/Espcn)
