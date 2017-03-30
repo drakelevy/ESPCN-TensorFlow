@@ -1,0 +1,18 @@
+{
+	"training_num": 70,
+	"validation_num": 13,
+	"test_num": 13,
+	"ratio": 3,
+	"lr_stride": 9,
+	"lr_size": 17,
+	"edge": 8,
+	"image_dir": "images/",
+	"training_dir": "training/",
+	"training_image_dir": "training_images/",
+	"validation_dir": "validation/",
+	"validation_image_dir": "validation_images/",
+	"test_dir": "test/",
+	"test_image_dir": "test_images/",
+    "filters_size": [5, 3, 3],
+    "channels": [64, 32]
+}

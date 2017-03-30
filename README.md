@@ -1,4 +1,4 @@
-# FSRCNN-TensorFlow
+# ESPCN-TensorFlow
 TensorFlow implementation of the Efficient Sub-Pixel Convolutional Neural Network in TensorFlow (ESPCN). Network based on this [paper](https://arxiv.org/pdf/1609.05158.pdf) and code adapted from this [repo](https://github.com/JesseYang/Espcn).
 
 ## Prerequisites
@@ -27,17 +27,13 @@ Run `prepare_images.py` and then `prepare_data.py` to format the training and va
 <br>
 Original butterfly image:
 <br>
-![orig](https://github.com/drakelevy/FSRCNN-Tensorflow/blob/master/result/original.png)<br>
+![orig](https://github.com/drakelevy/ESPCN-Tensorflow/blob/master/result/original.png)<br>
 Bicubic interpolated image:
 <br>
-![bicubic](https://github.com/drakelevy/FSRCNN-Tensorflow/blob/master/result/bicubic.png)<br>
+![bicubic](https://github.com/drakelevy/ESPCN-Tensorflow/blob/master/result/bicubic.png)<br>
 Super-resolved image:
 <br>
-![srcnn](https://github.com/drakelevy/FSRCNN-Tensorflow/blob/master/result/fsrcnn.png)
+![espcn](https://github.com/drakelevy/ESPCN-Tensorflow/blob/master/result/espcn.png)
 
 ## References
-* [tegg89/SRCNN-Tensorflow](https://github.com/tegg89/SRCNN-Tensorflow)
-<br>
-* [liliumao/Tensorflow-srcnn](https://github.com/liliumao/Tensorflow-srcnn) 
-<br>
-* [carpedm20/DCGAN-tensorflow](https://github.com/carpedm20/DCGAN-tensorflow) 
+* [JesseYang/Espcn](https://github.com/JesseYang/Espcn)
