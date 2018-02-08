@@ -1,4 +1,4 @@
-from scipy import misc
+from scipy import misc, ndimage
 import numpy as np
 import imghdr
 import shutil
@@ -34,6 +34,7 @@ def prepare_images():
             width = hr_image.shape[1]
             new_width = width - width % ratio
             hr_image = hr_image[0:new_height,0:new_width]
+            blurred = ndimage.gaussian_filter(hr_image, sigma=(1, 1, 0))
             lr_image = blurred[::ratio,::ratio,:]
 
             height = hr_image.shape[0]
