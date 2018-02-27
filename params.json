@@ -2,7 +2,7 @@
 	"training_num": 70,
 	"validation_num": 13,
 	"test_num": 13,
-	"ratio": 3,
+	"ratio": 2,
 	"lr_stride": 9,
 	"lr_size": 17,
 	"edge": 8,

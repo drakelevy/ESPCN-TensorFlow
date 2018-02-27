@@ -105,14 +105,15 @@ class ESPCN:
 
         input_images, input_labels = input_list[0][:,:,:,0:1], None
         # Generate doesn't use input_labels
+        ratioSquare = self.ratio * self.ratio
         if input_data[1] is not None:
-            input_labels = input_list[1][:,:,:,0:9]
+            input_labels = input_list[1][:,:,:,0:ratioSquare]
         return input_images, input_labels
 
     def create_network(self, input_labels):
         '''The default structure of the network is:
 
-        input (3 channels) ---> 5 * 5 conv (64 channels) ---> 3 * 3 conv (32 channels) ---> 3 * 3 conv (27 channels)
+        input (3 channels) ---> 5 * 5 conv (64 channels) ---> 3 * 3 conv (32 channels) ---> 3 * 3 conv (3*r^2 channels)
 
         Where `conv` is 2d convolutions with a non-linear activation (tanh) at the output.
         '''
