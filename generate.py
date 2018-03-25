@@ -10,14 +10,10 @@ import pdb
 
 from espcn import ESPCN
 
-RATIO = 3
-
 def get_arguments():
     parser = argparse.ArgumentParser(description='EspcnNet generation script')
     parser.add_argument('--checkpoint', type=str,
                         help='Which model checkpoint to generate from')
-    parser.add_argument('--ratio', type=int, default=RATIO,
-                        help='The ratio for up-sampling, should be the same with the model.')
     parser.add_argument('--lr_image', type=str,
                         help='The low-resolution image waiting for processed.')
     parser.add_argument('--hr_image', type=str,
@@ -64,7 +60,12 @@ def generate():
     sr_image = net.generate(lr_image)
 
     saver = tf.train.Saver()
-    if net.load(sess, saver, args.checkpoint):
+    try:
+        model_loaded = net.load(sess, saver, args.checkpoint)
+    except:
+        raise Exception("Failed to load model, does the ratio in params.json match the ratio you trained your checkpoint with?")
+
+    if model_loaded:
         print("[*] Checkpoint load success!")
     else:
         print("[*] Checkpoint load failed/no checkpoint found")
@@ -72,7 +73,7 @@ def generate():
 
     sr_image_y_data = sess.run(sr_image, feed_dict={lr_image: lr_image_batch})
 
-    sr_image_y_data = shuffle(sr_image_y_data[0], args.ratio)
+    sr_image_y_data = shuffle(sr_image_y_data[0], params['ratio'])
     sr_image_ycbcr_data = misc.imresize(lr_image_ycbcr_data,
                                     params['ratio'] * np.array(lr_image_data.shape[0:2]),
                                     'bicubic')

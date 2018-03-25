@@ -16,7 +16,7 @@ import pdb
 BATCH_SIZE = 32
 NUM_EPOCHS = 100
 LEARNING_RATE = 0.0001
-LOGDIR_ROOT = './logdir'
+LOGDIR_ROOT = './logdir_{}x'
 
 def get_arguments():
     parser = argparse.ArgumentParser(description='EspcnNet example network')
@@ -52,7 +52,9 @@ def train():
         return
 
     logdir_root = args.logdir_root # ./logdir
-    logdir = os.path.join(logdir_root, 'train') # ./logdir/train
+    if logdir_root == LOGDIR_ROOT:
+        logdir_root = logdir_root.format(params['ratio']) # ./logdir_{RATIO}x
+    logdir = os.path.join(logdir_root, 'train') # ./logdir_{RATIO}x/train
 
     # Load training data as np arrays
     lr_images, hr_labels = create_inputs(params)

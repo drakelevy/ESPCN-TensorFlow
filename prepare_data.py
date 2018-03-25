@@ -1,8 +1,9 @@
-import os
-from scipy import misc
+from scipy import misc, ndimage
 import numpy as np
-import json
+import imghdr
 import shutil
+import os
+import json
 
 mat = np.array(
     [[ 65.481, 128.553, 24.966 ],
@@ -56,26 +57,81 @@ def shuffle(input_image, ratio):
                 shuffled[i,j,k] = input_image[i / ratio, j / ratio, k * ratio * ratio + (i % ratio) * ratio + (j % ratio)]
     return shuffled
 
-def prepare_data():
-    with open("./params.json", 'r') as f:
-        params = json.load(f)
+def prepare_images(params):
+    ratio, training_num, lr_stride, lr_size = params['ratio'], params['training_num'], params['lr_stride'], params['lr_size']
+    hr_stride = lr_stride * ratio
+    hr_size = lr_size * ratio
+
+    # first clear old images and create new directories
+    for ele in ['training', 'validation', 'test']:
+        new_dir = params[ele + '_image_dir'].format(ratio)
+        if os.path.isdir(new_dir):
+            shutil.rmtree(new_dir)
+        for sub_dir in ['/hr', 'lr']:
+            os.makedirs(new_dir + sub_dir)
+
+    image_num = 0
+    folder = params['training_image_dir'].format(ratio)
+    for root, dirnames, filenames in os.walk(params['image_dir']):
+        for filename in filenames:
+            path = os.path.join(root, filename)
+            if imghdr.what(path) != 'jpeg':
+                continue
+                
+            hr_image = misc.imread(path)
+            height = hr_image.shape[0]
+            new_height = height - height % ratio
+            width = hr_image.shape[1]
+            new_width = width - width % ratio
+            hr_image = hr_image[0:new_height,0:new_width]
+            blurred = ndimage.gaussian_filter(hr_image, sigma=(1, 1, 0))
+            lr_image = blurred[::ratio,::ratio,:]
+
+            height = hr_image.shape[0]
+            width = hr_image.shape[1]
+            vertical_number = height / hr_stride - 1
+            horizontal_number = width / hr_stride - 1
+            image_num = image_num + 1
+            if image_num % 10 == 0:
+                print "Finished image: {}".format(image_num)
+            if image_num > training_num and image_num <= training_num + params['validation_num']:
+                folder = params['validation_image_dir'].format(ratio)
+            elif image_num > training_num + params['validation_num']:
+                folder = params['test_image_dir'].format(ratio)
+            #misc.imsave(folder + 'hr_full/' + filename[0:-4] + '.png', hr_image)
+            #misc.imsave(folder + 'lr_full/' + filename[0:-4] + '.png', lr_image)
+            for x in range(0, horizontal_number):
+                for y in range(0, vertical_number):
+                    hr_sub_image = hr_image[y * hr_stride : y * hr_stride + hr_size, x * hr_stride : x * hr_stride + hr_size]
+                    lr_sub_image = lr_image[y * lr_stride : y * lr_stride + lr_size, x * lr_stride : x * lr_stride + lr_size]
+                    misc.imsave("{}hr/{}_{}_{}.png".format(folder, filename[0:-4], y, x), hr_sub_image)
+                    misc.imsave("{}lr/{}_{}_{}.png".format(folder, filename[0:-4], y, x), lr_sub_image)
+            if image_num >= training_num + params['validation_num'] + params['test_num']:
+                break
+        else:
+            continue
+        break
+
+def prepare_data(params):
     ratio = params['ratio']
     params['hr_stride'] = params['lr_stride'] * ratio
     params['hr_size'] = params['lr_size'] * ratio
 
     for ele in ['training', 'validation', 'test']:
-        if os.path.isdir(params[ele + '_dir']):
-            shutil.rmtree(params[ele + '_dir'])
-        os.makedirs(params[ele + '_dir'])
+        new_dir = params[ele + '_dir'].format(ratio)
+        if os.path.isdir(new_dir):
+            shutil.rmtree(new_dir)
+        os.makedirs(new_dir)
 
     ratio, lr_size, edge = params['ratio'], params['lr_size'], params['edge']
-    image_dirs = [params['training_image_dir'], params['validation_image_dir'], params['test_image_dir']]
-    data_dirs = [params['training_dir'], params['validation_dir'], params['test_dir']]
+    image_dirs = [d.format(ratio) for d in [params['training_image_dir'], params['validation_image_dir'], params['test_image_dir']]]
+    data_dirs = [d.format(ratio) for d in [params['training_dir'], params['validation_dir'], params['test_dir']]]
     hr_start_idx = ratio * edge / 2
     hr_end_idx = hr_start_idx + (lr_size - edge) * ratio
     sub_hr_size = (lr_size - edge) * ratio
     for dir_idx, image_dir in enumerate(image_dirs):
         data_dir = data_dirs[dir_idx]
+        print "Creating {}".format(data_dir)
         for root, dirnames, filenames in os.walk(image_dir + "/lr"):
             for filename in filenames:
                 lr_path = os.path.join(root, filename)
@@ -91,7 +147,26 @@ def prepare_data():
                 data = np.concatenate([lr_data, hr_data])
                 data.astype('uint8').tofile(data_dir + "/" + filename[0:-4])
 
+def remove_images(params):
+    # Don't need old image folders
+    for ele in ['training', 'validation', 'test']:
+        rm_dir = params[ele + '_image_dir'].format(params['ratio'])
+        if os.path.isdir(rm_dir):
+            shutil.rmtree(rm_dir)
+
 
 if __name__ == '__main__':
-    prepare_data()
+    with open("./params.json", 'r') as f:
+        params = json.load(f)
 
+    print "Preparing images with scaling ratio: {}".format(params['ratio'])
+    print "If you want a different ratio change 'ratio' in params.json"
+    print "Splitting images (1/3)"
+    prepare_images(params)
+
+    print "Preparing data, this may take a while (2/3)"
+    prepare_data(params)
+
+    print "Cleaning up split images (3/3)"
+    remove_images(params)
+    print "Done, you can now train the model!"

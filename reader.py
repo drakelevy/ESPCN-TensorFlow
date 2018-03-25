@@ -12,7 +12,12 @@ def create_inputs(params):
     sess = tf.Session()
 
     lr_images, hr_labels = [], []
-    training_dir = params['training_dir']
+    training_dir = params['training_dir'].format(params['ratio'])
+
+    # Raise exception if user has not ran prepare_data.py yet
+    if not os.path.isdir(training_dir):
+        raise Exception("You must first run prepare_data.py before you can train")
+
     lr_shape = (params['lr_size'], params['lr_size'], 3)
     hr_shape = output_shape = (params['lr_size'] - params['edge'], params['lr_size'] - params['edge'], 3 * params['ratio']**2)
     for file in os.listdir(training_dir):
