@@ -23,7 +23,7 @@ For generating: `python generate.py`
 <br>
 Must specify checkpoint, low-resolution image, and output path
 <br>
-`python generate.py --checkpoint logdir/train --lr_image images/butterfly_lr.png --out_path results/butterfly_hr.png`
+`python generate.py --checkpoint logdir_2x/train --lr_image images/butterfly_GT.png --out_path result/butterfly_HR`
 
 Check `params.json` for parameter values and to change the upscaling ratio (2x, 3x, ...) the model is operating on.
 
