@@ -59,8 +59,9 @@ def shuffle(input_image, ratio):
 def prepare_data():
     with open("./params.json", 'r') as f:
         params = json.load(f)
+    ratio = params['ratio']
     params['hr_stride'] = params['lr_stride'] * ratio
-    params['hr_size'] = lr_size * ratio
+    params['hr_size'] = params['lr_size'] * ratio
 
     for ele in ['training', 'validation', 'test']:
         if os.path.isdir(params[ele + '_dir']):
